@@ -7,13 +7,13 @@ Tras ejecutar el SSMS script "ProyectoCompletoSQL v4", se encontrarán disponibl
    
    Contraseña: 123
    
-**3. Empleado**
+**2. Empleado**
    
    Correo: empleado@pedidos360.com
    
    Contraseña: 123
    
-**5. Cliente**
+**3. Cliente**
    
    Correo: cliente@pedidos360.com
    
