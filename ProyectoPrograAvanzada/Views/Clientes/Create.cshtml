@@ -1,0 +1,163 @@
+﻿@model ProyectoPrograAvanzada.Models.Cliente
+
+@{
+    ViewData["Title"] = "Nuevo cliente";
+}
+
+<style>
+    .form-page-header {
+        margin-bottom: 24px;
+    }
+
+        .form-page-header h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #084c61;
+            margin: 0;
+        }
+
+        .form-page-header p {
+            margin: 6px 0 0;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+    .form-card {
+        background: #f8fbfc;
+        border-radius: 20px;
+        padding: 28px;
+        max-width: 750px;
+        box-shadow: inset 0 0 0 1px rgba(8,76,97,0.06);
+    }
+
+    .custom-label {
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 6px;
+    }
+
+    .custom-input {
+        border-radius: 12px;
+        border: 1px solid #cfe0e6;
+        padding: 11px 12px;
+        min-height: 46px;
+    }
+
+        .custom-input:focus {
+            border-color: #7fa5b1;
+            box-shadow: 0 0 0 .2rem rgba(127,165,177,.25);
+        }
+
+    .status-box {
+        margin-top: 16px;
+        background: white;
+        border: 1px solid #dbe7eb;
+        border-radius: 14px;
+        padding: 14px 16px;
+    }
+
+    .btn-save {
+        background: #084c61;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 10px 18px;
+        font-weight: 600;
+    }
+
+        .btn-save:hover {
+            background: #063b4b;
+        }
+
+    .btn-back {
+        background: #d7e6eb;
+        color: #084c61;
+        border: none;
+        border-radius: 12px;
+        padding: 10px 18px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .form-actions {
+        margin-top: 24px;
+        display: flex;
+        gap: 10px;
+    }
+</style>
+
+<div class="form-page-header">
+    <h2>Nuevo cliente</h2>
+    <p>Ingrese la información para registrar un cliente.</p>
+</div>
+
+<div class="form-card">
+
+    <form asp-action="Create">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row g-3">
+
+            <div class="col-md-6">
+                <label asp-for="Nombre" class="custom-label"></label>
+                <input asp-for="Nombre" class="form-control custom-input" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Cedula" class="custom-label"></label>
+                <input asp-for="Cedula" class="form-control custom-input" />
+                <span asp-validation-for="Cedula" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Correo" class="custom-label"></label>
+                <input asp-for="Correo" class="form-control custom-input" />
+                <span asp-validation-for="Correo" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Telefono" class="custom-label"></label>
+                <input asp-for="Telefono" class="form-control custom-input" />
+                <span asp-validation-for="Telefono" class="text-danger"></span>
+            </div>
+
+            <div class="col-12">
+                <label asp-for="Direccion" class="custom-label"></label>
+                <input asp-for="Direccion" class="form-control custom-input" />
+                <span asp-validation-for="Direccion" class="text-danger"></span>
+            </div>
+
+            <div class="col-12">
+                <div class="status-box">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" asp-for="Activo" />
+                        <label class="form-check-label" asp-for="Activo">
+                            Cliente activo
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-save">
+                Guardar cliente
+            </button>
+
+            <a asp-action="Index" class="btn-back">
+                Volver
+            </a>
+        </div>
+
+    </form>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

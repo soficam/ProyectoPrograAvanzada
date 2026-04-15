@@ -1,0 +1,136 @@
+﻿@section Styles {
+    <link rel="stylesheet" href="~/css/style-pedido-lista.css" asp-append-version="true" />
+}
+
+
+@model IEnumerable<ProyectoPrograAvanzada.Models.Pedido>
+
+@{
+    ViewData["Title"] = "Pedidos";
+}
+
+
+<div class="page-header">
+    <div class="page-title">
+        <h2>Pedidos</h2>
+        <p>Gestione los pedidos registrados en el sistema.</p>
+    </div>
+
+    <a asp-action="Create" class="btn-add">
+        <i class="bi bi-plus-circle"></i>
+        Nuevo pedido
+    </a>
+</div>
+
+<div class="table-card">
+    @if (Model != null && Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th>Pedido</th>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Usuario</th>
+                        <th>Subtotal</th>
+                        <th>Impuestos</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Activo</th>
+                        <th style="width: 160px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        var estadoTexto = item.Estado?.Trim() ?? "Sin estado";
+                        var estadoClase = "status-pendiente";
+
+                        if (estadoTexto.Equals("En proceso", StringComparison.OrdinalIgnoreCase))
+                        {
+                            estadoClase = "status-proceso";
+                        }
+                        else if (estadoTexto.Equals("Entregado", StringComparison.OrdinalIgnoreCase))
+                        {
+                            estadoClase = "status-entregado";
+                        }
+                        else if (estadoTexto.Equals("Cancelado", StringComparison.OrdinalIgnoreCase))
+                        {
+                            estadoClase = "status-cancelado";
+                        }
+
+                        <tr>
+                            <td>
+                                <div class="pedido-id">#@item.Id</div>
+                                <div class="pedido-meta">Orden registrada</div>
+                            </td>
+
+                            <td>
+                                @item.Fecha.ToString("dd/MM/yyyy")
+                                <div class="pedido-meta">@item.Fecha.ToString("hh:mm tt")</div>
+                            </td>
+
+                            <td>
+                                <div class="person-box">
+                                    <span class="person-name">@(item.Cliente != null ? item.Cliente.Nombre : "Sin cliente")</span>
+                                    <span class="person-subtext">ID: @item.ClienteId</span>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="person-box">
+                                    <span class="person-name">@(item.Usuario != null ? item.Usuario.Nombre : "Sin usuario")</span>
+                                    <span class="person-subtext">ID: @item.UsuarioId</span>
+                                </div>
+                            </td>
+
+                            <td><span class="money-text">₡ @item.Subtotal.ToString("N2")</span></td>
+                            <td><span class="money-text">₡ @item.Impuestos.ToString("N2")</span></td>
+                            <td><span class="money-text">₡ @item.Total.ToString("N2")</span></td>
+
+                            <td>
+                                <span class="status-badge @estadoClase">@estadoTexto</span>
+                            </td>
+
+                            <td>
+                                @if (item.Activo)
+                                {
+                                    <span class="active-badge active-yes">Sí</span>
+                                }
+                                else
+                                {
+                                    <span class="active-badge active-no">No</span>
+                                }
+                            </td>
+
+                            <td>
+                                <div class="actions">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn-action btn-edit" title="Editar">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn-action btn-details" title="Ver detalle">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn-action btn-delete" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="bi bi-receipt"></i>
+            <h5>No hay pedidos registrados</h5>
+            <p>Cuando agregue un nuevo pedido, aparecerá listado aquí.</p>
+        </div>
+    }
+</div>

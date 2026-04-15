@@ -1,0 +1,338 @@
+﻿@section Styles {
+    <link rel="stylesheet" href="~/css/style-pedido.css" asp-append-version="true" />
+}
+
+@model ProyectoPrograAvanzada.Models.ViewModels.PedidoCreateViewModel
+
+@{
+    ViewData["Title"] = "Nuevo pedido";
+    var productos = ViewData["Productos"] as List<ProyectoPrograAvanzada.Models.Producto> ?? new List<ProyectoPrograAvanzada.Models.Producto>();
+}
+
+<div class="form-page-header">
+    <h2>Nuevo pedido</h2>
+    <p>Complete la información general y agregue los productos del pedido.</p>
+</div>
+
+<div class="pedido-card">
+    <form asp-action="Create" method="post" id="pedidoForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="section-title">Información general</div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <label asp-for="ClienteId" class="form-label custom-label">Cliente</label>
+                <select asp-for="ClienteId" asp-items="ViewBag.ClienteId" class="form-select custom-select">
+                    <option value="">Seleccione un cliente</option>
+                </select>
+                <span asp-validation-for="ClienteId" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="UsuarioId" class="form-label custom-label">Usuario</label>
+                <select asp-for="UsuarioId" asp-items="ViewBag.UsuarioId" class="form-select custom-select">
+                    <option value="">Seleccione un usuario</option>
+                </select>
+                <span asp-validation-for="UsuarioId" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="Estado" class="form-label custom-label">Estado</label>
+                <select asp-for="Estado" class="form-select custom-select">
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="En proceso">En proceso</option>
+                    <option value="Entregado">Entregado</option>
+                    <option value="Cancelado">Cancelado</option>
+                </select>
+                <span asp-validation-for="Estado" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label custom-label">Fecha</label>
+                <input type="text" class="form-control custom-input readonly-box" value="@DateTime.Now.ToString("dd/MM/yyyy HH:mm")" readonly />
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label custom-label">Activo</label>
+                <input type="text" class="form-control custom-input readonly-box" value="Sí" readonly />
+            </div>
+        </div>
+
+        <div class="section-title">Detalle del pedido</div>
+
+        <div id="detalleContainer">
+            @for (int i = 0; i < Model.Detalles.Count; i++)
+            {
+                <div class="detail-box detail-line">
+                    <div class="detail-header">
+                        <div class="detail-title">Producto #<span class="line-number">@(i + 1)</span></div>
+                        <button type="button" class="btn-remove-line">Quitar</button>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label custom-label">Producto</label>
+                            <select name="Detalles[@i].ProductoId" class="form-select custom-select producto-select">
+                                <option value="">Seleccione un producto</option>
+                                @foreach (var p in productos)
+                                {
+                                    if (Model.Detalles[i].ProductoId == p.Id)
+                                    {
+                                        <option value="@p.Id"
+                                                data-precio="@((p.Precio ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture))"
+                                                data-impuesto="@((p.ImpuestoPorc ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture))"
+                                                selected="selected">
+                                            @p.Nombre
+                                        </option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@p.Id"
+                                                data-precio="@((p.Precio ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture))"
+                                                data-impuesto="@((p.ImpuestoPorc ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture))">
+                                            @p.Nombre
+                                        </option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label custom-label">Cantidad</label>
+                            <input type="number" min="1" name="Detalles[@i].Cantidad" value="@Model.Detalles[i].Cantidad" class="form-control custom-input cantidad-input" />
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label custom-label">Descuento</label>
+                            <input type="number" min="0" step="0.01" name="Detalles[@i].Descuento" value="@Model.Detalles[i].Descuento" class="form-control custom-input descuento-input" />
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label custom-label">Precio unit.</label>
+                            <input type="text" class="form-control custom-input readonly-box precio-unit-view" readonly />
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label custom-label">IVA %</label>
+                            <input type="text" class="form-control custom-input readonly-box impuesto-view" readonly />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label custom-label">Total línea</label>
+                            <div class="line-total-box total-linea-view">₡ 0.00</div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <button type="button" id="btnAddLine" class="btn-add-line mb-4">
+            <i class="bi bi-plus-circle"></i>
+            Agregar producto
+        </button>
+
+        <div class="section-title">Resumen</div>
+
+        <div class="summary-card">
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span id="subtotalView">₡ 0.00</span>
+            </div>
+            <div class="summary-row">
+                <span>Impuestos</span>
+                <span id="impuestosView">₡ 0.00</span>
+            </div>
+            <div class="summary-row">
+                <span>Total</span>
+                <span id="totalView">₡ 0.00</span>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-save-custom">
+                <i class="bi bi-check-circle"></i>
+                Guardar pedido
+            </button>
+
+            <a asp-action="Index" class="btn-back-custom">
+                <i class="bi bi-arrow-left"></i>
+                Volver al listado
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        const detalleContainer = document.getElementById('detalleContainer');
+        const btnAddLine = document.getElementById('btnAddLine');
+
+        function toNumber(value) {
+            const num = parseFloat(value);
+            return isNaN(num) ? 0 : num;
+        }
+
+        function formatMoney(value) {
+            return '₡ ' + value.toFixed(2);
+        }
+
+        function updateLineIndexes() {
+            const lines = detalleContainer.querySelectorAll('.detail-line');
+
+            lines.forEach((line, index) => {
+                const lineNumber = line.querySelector('.line-number');
+                if (lineNumber) lineNumber.textContent = index + 1;
+
+                const producto = line.querySelector('.producto-select');
+                const cantidad = line.querySelector('.cantidad-input');
+                const descuento = line.querySelector('.descuento-input');
+
+                if (producto) producto.name = `Detalles[${index}].ProductoId`;
+                if (cantidad) cantidad.name = `Detalles[${index}].Cantidad`;
+                if (descuento) descuento.name = `Detalles[${index}].Descuento`;
+            });
+        }
+
+        function updateLine(line) {
+            const productoSelect = line.querySelector('.producto-select');
+            const cantidadInput = line.querySelector('.cantidad-input');
+            const descuentoInput = line.querySelector('.descuento-input');
+            const precioView = line.querySelector('.precio-unit-view');
+            const impuestoView = line.querySelector('.impuesto-view');
+            const totalLineaView = line.querySelector('.total-linea-view');
+
+            const selected = productoSelect.options[productoSelect.selectedIndex];
+
+            const precio = toNumber(selected?.dataset?.precio);
+            const impuesto = toNumber(selected?.dataset?.impuesto);
+            const cantidad = Math.max(0, toNumber(cantidadInput.value));
+            const descuento = Math.max(0, toNumber(descuentoInput.value));
+
+            let base = (precio * cantidad) - descuento;
+            if (base < 0) base = 0;
+
+            const impuestoMonto = base * (impuesto / 100);
+            const totalLinea = base + impuestoMonto;
+
+            precioView.value = precio.toFixed(2);
+            impuestoView.value = impuesto.toFixed(2);
+            totalLineaView.textContent = formatMoney(totalLinea);
+
+            return {
+                subtotal: base,
+                impuesto: impuestoMonto,
+                total: totalLinea
+            };
+        }
+
+        function updateSummary() {
+            const lines = detalleContainer.querySelectorAll('.detail-line');
+
+            let subtotal = 0;
+            let impuestos = 0;
+            let total = 0;
+
+            lines.forEach(line => {
+                const result = updateLine(line);
+                subtotal += result.subtotal;
+                impuestos += result.impuesto;
+                total += result.total;
+            });
+
+            document.getElementById('subtotalView').textContent = formatMoney(subtotal);
+            document.getElementById('impuestosView').textContent = formatMoney(impuestos);
+            document.getElementById('totalView').textContent = formatMoney(total);
+        }
+
+        function bindLineEvents(line) {
+            const productoSelect = line.querySelector('.producto-select');
+            const cantidadInput = line.querySelector('.cantidad-input');
+            const descuentoInput = line.querySelector('.descuento-input');
+            const btnRemove = line.querySelector('.btn-remove-line');
+
+            productoSelect.addEventListener('change', updateSummary);
+            cantidadInput.addEventListener('input', updateSummary);
+            descuentoInput.addEventListener('input', updateSummary);
+
+            btnRemove.addEventListener('click', function () {
+                const lines = detalleContainer.querySelectorAll('.detail-line');
+                if (lines.length > 1) {
+                    line.remove();
+                    updateLineIndexes();
+                    updateSummary();
+                }
+            });
+        }
+
+        btnAddLine.addEventListener('click', function () {
+            const index = detalleContainer.querySelectorAll('.detail-line').length;
+
+            const newLine = document.createElement('div');
+            newLine.className = 'detail-box detail-line';
+
+            newLine.innerHTML = `
+                <div class="detail-header">
+                    <div class="detail-title">Producto #<span class="line-number">${index + 1}</span></div>
+                    <button type="button" class="btn-remove-line">Quitar</button>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label custom-label">Producto</label>
+                        <select name="Detalles[${index}].ProductoId" class="form-select custom-select producto-select">
+                            <option value="">Seleccione un producto</option>
+                            @foreach (var p in productos)
+                            {
+                                <text>
+                                <option value="@p.Id"
+                                        data-precio="@((p.Precio ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture))"
+                                        data-impuesto="@((p.ImpuestoPorc ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture))">
+                                    @p.Nombre
+                                </option>
+                                </text>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label custom-label">Cantidad</label>
+                        <input type="number" min="1" name="Detalles[${index}].Cantidad" value="1" class="form-control custom-input cantidad-input" />
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label custom-label">Descuento</label>
+                        <input type="number" min="0" step="0.01" name="Detalles[${index}].Descuento" value="0" class="form-control custom-input descuento-input" />
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label custom-label">Precio unit.</label>
+                        <input type="text" class="form-control custom-input readonly-box precio-unit-view" readonly />
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label custom-label">IVA %</label>
+                        <input type="text" class="form-control custom-input readonly-box impuesto-view" readonly />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label custom-label">Total línea</label>
+                        <div class="line-total-box total-linea-view">₡ 0.00</div>
+                    </div>
+                </div>
+            `;
+
+            detalleContainer.appendChild(newLine);
+            bindLineEvents(newLine);
+            updateLineIndexes();
+            updateSummary();
+        });
+
+        document.querySelectorAll('.detail-line').forEach(bindLineEvents);
+        updateSummary();
+    </script>
+}

@@ -1,0 +1,303 @@
+﻿@model IEnumerable<ProyectoPrograAvanzada.Models.Usuario>
+
+@{
+    ViewData["Title"] = "Usuarios";
+}
+
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 24px;
+    }
+
+    .page-title h2 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 700;
+        color: #084c61;
+    }
+
+    .page-title p {
+        margin: 6px 0 0 0;
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .btn-add {
+        background-color: #084c61;
+        color: white;
+        border: none;
+        border-radius: 14px;
+        padding: 10px 18px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.25s ease;
+    }
+
+    .btn-add:hover {
+        background-color: #063b4b;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .table-card {
+        background-color: #f8fbfc;
+        border-radius: 18px;
+        padding: 20px;
+        box-shadow: inset 0 0 0 1px rgba(8, 76, 97, 0.06);
+    }
+
+    .custom-table {
+        margin: 0;
+        vertical-align: middle;
+        min-width: 950px;
+    }
+
+    .custom-table thead th {
+        background-color: #d7e6eb;
+        color: #084c61;
+        font-weight: 700;
+        border: none;
+        padding: 14px;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+    .custom-table tbody tr {
+        background-color: white;
+        transition: 0.2s ease;
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: #f1f7f9;
+    }
+
+    .custom-table td {
+        padding: 16px 14px;
+        border-top: 10px solid transparent;
+        color: #334155;
+    }
+
+    .user-cell {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 220px;
+    }
+
+    .user-avatar {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background-color: #d7e6eb;
+        color: #084c61;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+
+    .user-name {
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .user-subtext {
+        font-size: 12px;
+        color: #64748b;
+        margin-top: 2px;
+    }
+
+    .contact-text {
+        color: #475569;
+        font-size: 14px;
+    }
+
+    .status-badge,
+    .role-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .status-active {
+        background-color: #d1f0dd;
+        color: #18794e;
+    }
+
+    .status-inactive {
+        background-color: #f8d7da;
+        color: #842029;
+    }
+
+    .role-admin {
+        background-color: #ede9fe;
+        color: #6d28d9;
+    }
+
+    .role-user {
+        background-color: #e0f2fe;
+        color: #0369a1;
+    }
+
+    .role-default {
+        background-color: #e2e8f0;
+        color: #475569;
+    }
+
+    .actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
+
+    .btn-edit { background-color: #dbeafe; color: #1d4ed8; }
+    .btn-details { background-color: #e0f2fe; color: #0369a1; }
+    .btn-delete { background-color: #fee2e2; color: #dc2626; }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #6b7280;
+    }
+</style>
+
+<div class="page-header">
+    <div class="page-title">
+        <h2>Usuarios</h2>
+        <p>Gestione los usuarios del sistema y sus roles de acceso.</p>
+    </div>
+
+    <a asp-action="Create" class="btn-add">
+        <i class="bi bi-plus-circle"></i>
+        Nuevo usuario
+    </a>
+</div>
+
+<!-- 🔍 BUSCADOR -->
+<form method="get" asp-action="Index" style="display:flex; gap:10px; margin-bottom:15px;">
+    <input type="text" name="busqueda" value="@ViewBag.Busqueda"
+           class="form-control"
+           placeholder="Buscar usuario por nombre..." />
+
+    <button type="submit" class="btn btn-primary">
+        Buscar
+    </button>
+</form>
+
+<div class="table-card">
+    @if (Model != null && Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Correo</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th style="width: 160px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        var inicial = !string.IsNullOrWhiteSpace(item.Nombre)
+                        ? item.Nombre.Trim().Substring(0, 1).ToUpper()
+                        : "?";
+
+                        var rolTexto = item.Rol?.Trim() ?? "Sin rol";
+                        var rolClase = "role-default";
+
+                        if (rolTexto.Equals("Administrador", StringComparison.OrdinalIgnoreCase) ||
+                            rolTexto.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+                        {
+                            rolClase = "role-admin";
+                        }
+                        else if (rolTexto.Equals("Usuario", StringComparison.OrdinalIgnoreCase) ||
+                                 rolTexto.Equals("Empleado", StringComparison.OrdinalIgnoreCase))
+                        {
+                            rolClase = "role-user";
+                        }
+
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <div class="user-avatar">@inicial</div>
+                                    <div>
+                                        <div class="user-name">@item.Nombre</div>
+                                        <div class="user-subtext">ID: @item.Id</div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>@item.Correo</td>
+
+                            <td>
+                                <span class="role-badge @rolClase">@rolTexto</span>
+                            </td>
+
+                            <td>
+                                @if (item.Activo)
+                                {
+                                    <span class="status-badge status-active">Activo</span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge status-inactive">Inactivo</span>
+                                }
+                            </td>
+
+                            <td>
+                                <div class="actions">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn-action btn-edit">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn-action btn-details">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn-action btn-delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="bi bi-person-gear"></i>
+            <h5>No hay usuarios registrados</h5>
+            <p>Cuando agregue un nuevo usuario, aparecerá listado aquí.</p>
+        </div>
+    }
+</div>

@@ -1,0 +1,427 @@
+﻿@model IEnumerable<ProyectoPrograAvanzada.Models.Producto>
+
+@{
+    ViewData["Title"] = "Catálogo";
+
+    var usuarioId = Context.Session.GetInt32("UsuarioId");
+    var usuarioRol = Context.Session.GetString("UsuarioRol");
+    bool estaLogueado = usuarioId != null;
+    bool esCliente = usuarioRol == "Cliente";
+
+    var categorias = ViewBag.Categorias as List<ProyectoPrograAvanzada.Models.Categorium> ?? new List<ProyectoPrograAvanzada.Models.Categorium>();
+
+    string busqueda = ViewBag.Busqueda?.ToString() ?? "";
+    int? categoriaSeleccionada = ViewBag.CategoriaId as int?;
+    decimal? precioMin = ViewBag.PrecioMin as decimal?;
+    decimal? precioMax = ViewBag.PrecioMax as decimal?;
+}
+
+<style>
+    .catalog-header {
+        margin-bottom: 24px;
+    }
+
+        .catalog-header h2 {
+            margin: 0;
+            font-size: 30px;
+            font-weight: 700;
+            color: #084c61;
+        }
+
+        .catalog-header p {
+            margin: 8px 0 0 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+    .catalog-message {
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        color: #9a3412;
+        padding: 14px 16px;
+        border-radius: 14px;
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+
+    .filters-card {
+        background: #ffffff;
+        border: 1px solid #dbe7eb;
+        border-radius: 18px;
+        padding: 18px;
+        margin-bottom: 24px;
+        box-shadow: 0 8px 20px rgba(8, 76, 97, 0.05);
+    }
+
+    .filters-grid {
+        display: grid;
+        grid-template-columns: 2fr 1.2fr 1fr 1fr auto auto;
+        gap: 12px;
+        align-items: end;
+    }
+
+    .filter-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #334155;
+    }
+
+    .filter-control {
+        width: 100%;
+        height: 44px;
+        border: 1px solid #cfe0e6;
+        border-radius: 12px;
+        padding: 0 12px;
+        background: white;
+        color: #1e293b;
+        font-size: 14px;
+    }
+
+        .filter-control:focus {
+            outline: none;
+            border-color: #7fa5b1;
+            box-shadow: 0 0 0 .2rem rgba(127,165,177,.25);
+        }
+
+    .btn-filter,
+    .btn-clear {
+        height: 44px;
+        border: none;
+        border-radius: 12px;
+        padding: 0 18px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+    }
+
+    .btn-filter {
+        background: #084c61;
+        color: white;
+    }
+
+        .btn-filter:hover {
+            background: #063b4b;
+            color: white;
+        }
+
+    .btn-clear {
+        background: #d7e6eb;
+        color: #084c61;
+    }
+
+        .btn-clear:hover {
+            background: #c4dbe2;
+            color: #063b4b;
+        }
+
+    .catalog-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .product-card {
+        background: #ffffff;
+        border: 1px solid #dbe7eb;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(8, 76, 97, 0.05);
+        transition: 0.25s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .product-card:hover {
+            transform: translateY(-3px);
+        }
+
+    .product-image {
+        width: 100%;
+        height: 220px;
+        background: #eef4f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border-bottom: 1px solid #e5eef2;
+    }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .product-placeholder {
+        color: #7fa5b1;
+        text-align: center;
+        font-size: 14px;
+    }
+
+        .product-placeholder i {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+    .product-body {
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        flex: 1;
+    }
+
+    .product-category {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 999px;
+        background: #e0f2fe;
+        color: #0369a1;
+        font-size: 12px;
+        font-weight: 700;
+        width: fit-content;
+    }
+
+    .product-name {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1e293b;
+        min-height: 48px;
+    }
+
+    .product-price {
+        font-size: 22px;
+        font-weight: 700;
+        color: #084c61;
+    }
+
+    .product-stock {
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .product-actions {
+        margin-top: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-product {
+        width: 100%;
+        border: none;
+        border-radius: 14px;
+        padding: 12px 16px;
+        font-weight: 600;
+        text-decoration: none;
+        text-align: center;
+        transition: 0.25s ease;
+    }
+
+    .btn-detail {
+        background: #d7e6eb;
+        color: #084c61;
+    }
+
+        .btn-detail:hover {
+            background: #c4dbe2;
+            color: #063b4b;
+        }
+
+    .btn-cart {
+        background: #084c61;
+        color: white;
+    }
+
+        .btn-cart:hover {
+            background: #063b4b;
+            color: white;
+        }
+
+    .btn-disabled {
+        background: #e5e7eb;
+        color: #6b7280;
+        cursor: not-allowed;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 50px 20px;
+        color: #64748b;
+    }
+
+        .empty-state i {
+            font-size: 46px;
+            color: #7fa5b1;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+    @@media (max-width: 1300px) {
+        .filters-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .catalog-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @@media (max-width: 900px) {
+        .filters-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .catalog-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @@media (max-width: 600px) {
+        .filters-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .catalog-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="catalog-header">
+    <h2>Catálogo de productos</h2>
+    <p>Explore los productos disponibles dentro del sistema.</p>
+</div>
+
+@if (!estaLogueado)
+{
+    <div class="catalog-message">
+        Para agregar productos al carrito, primero debe iniciar sesión o registrarse como cliente.
+    </div>
+}
+else if (!esCliente)
+{
+    <div class="catalog-message">
+        Ha iniciado sesión con un rol interno. Este catálogo se muestra como referencia visual.
+    </div>
+}
+
+<div class="filters-card">
+    <form method="get" asp-action="Index">
+        <div class="filters-grid">
+            <div class="filter-group">
+                <label for="busqueda">Buscar producto</label>
+                <input type="text" id="busqueda" name="busqueda" value="@busqueda" class="filter-control" placeholder="Nombre del producto" />
+            </div>
+
+            <div class="filter-group">
+                <label for="categoriaId">Categoría</label>
+                <select id="categoriaId" name="categoriaId" class="filter-control">
+                    <option value="">Todas</option>
+                    @foreach (var categoria in categorias)
+                    {
+                        if (categoriaSeleccionada == categoria.Id)
+                        {
+                            <option value="@categoria.Id" selected="selected">@categoria.Nombre</option>
+                        }
+                        else
+                        {
+                            <option value="@categoria.Id">@categoria.Nombre</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="precioMin">Precio mínimo</label>
+                <input type="number" id="precioMin" name="precioMin" value="@precioMin" class="filter-control" min="0" step="0.01" placeholder="0" />
+            </div>
+
+            <div class="filter-group">
+                <label for="precioMax">Precio máximo</label>
+                <input type="number" id="precioMax" name="precioMax" value="@precioMax" class="filter-control" min="0" step="0.01" placeholder="0" />
+            </div>
+
+            <button type="submit" class="btn-filter">
+                <i class="bi bi-search me-2"></i>Filtrar
+            </button>
+
+            <a asp-action="Index" class="btn-clear">
+                <i class="bi bi-x-circle me-2"></i>Limpiar
+            </a>
+        </div>
+    </form>
+</div>
+
+@if (Model != null && Model.Any())
+{
+    <div class="catalog-grid">
+        @foreach (var item in Model)
+        {
+            <div class="product-card">
+                <div class="product-image">
+                    @if (!string.IsNullOrWhiteSpace(item.ImagenUrl))
+                    {
+                        <img src="@item.ImagenUrl" alt="@item.Nombre" />
+                    }
+                    else
+                    {
+                        <div class="product-placeholder">
+                            <i class="bi bi-image"></i>
+                            Sin imagen
+                        </div>
+                    }
+                </div>
+
+                <div class="product-body">
+                    <span class="product-category">
+                        @(item.Categoria != null ? item.Categoria.Nombre : "Sin categoría")
+                    </span>
+
+                    <div class="product-name">@item.Nombre</div>
+
+                    <div class="product-price">₡ @((item.Precio ?? 0).ToString("N2"))</div>
+
+                    <div class="product-stock">Stock disponible: @item.Stock</div>
+
+                    <div class="product-actions">
+                        <a asp-controller="Catalogo" asp-action="Details" asp-route-id="@item.Id" class="btn-product btn-detail">
+                            Ver detalle
+                        </a>
+
+                        @if (estaLogueado && esCliente)
+                        {
+                            <form asp-controller="Carrito" asp-action="Agregar" method="post" class="m-0">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productoId" value="@item.Id" />
+                                <button type="submit" class="btn-product btn-cart">
+                                    Agregar al carrito
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a asp-controller="Account" asp-action="Login" class="btn-product btn-disabled">
+                                Inicie sesión para comprar
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="empty-state">
+        <i class="bi bi-box-seam"></i>
+        <h5>No se encontraron productos</h5>
+        <p>Pruebe ajustando los filtros de búsqueda.</p>
+    </div>
+}

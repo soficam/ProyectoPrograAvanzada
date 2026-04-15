@@ -1,0 +1,188 @@
+﻿@model ProyectoPrograAvanzada.Models.Producto
+
+@{
+    ViewData["Title"] = "Detalle del producto";
+}
+
+<style>
+    .details-card {
+        background: #ffffff;
+        border: 1px solid #dbe7eb;
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 8px 20px rgba(8, 76, 97, 0.05);
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: 420px 1fr;
+        gap: 24px;
+    }
+
+    .details-image {
+        width: 100%;
+        height: 360px;
+        border-radius: 18px;
+        background: #eef4f6;
+        border: 1px solid #dbe7eb;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .details-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .details-placeholder {
+        color: #7fa5b1;
+        text-align: center;
+    }
+
+        .details-placeholder i {
+            font-size: 42px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+    .details-title {
+        font-size: 30px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 10px;
+    }
+
+    .details-category {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: #e0f2fe;
+        color: #0369a1;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 14px;
+    }
+
+    .details-price {
+        font-size: 28px;
+        font-weight: 700;
+        color: #084c61;
+        margin-bottom: 14px;
+    }
+
+    .details-meta {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .meta-box {
+        background: #f8fbfc;
+        border: 1px solid #e5eef2;
+        border-radius: 14px;
+        padding: 14px;
+    }
+
+    .meta-label {
+        font-size: 12px;
+        color: #64748b;
+        margin-bottom: 4px;
+    }
+
+    .meta-value {
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .details-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+
+    .btn-main {
+        background: #084c61;
+        color: white;
+        border: none;
+        border-radius: 14px;
+        padding: 11px 20px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .btn-main:hover {
+            background: #063b4b;
+            color: white;
+        }
+
+    .btn-secondary {
+        background: #d7e6eb;
+        color: #084c61;
+        border: none;
+        border-radius: 14px;
+        padding: 11px 20px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .btn-secondary:hover {
+            background: #c4dbe2;
+            color: #063b4b;
+        }
+
+    @@media (max-width: 900px) {
+        .details-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="details-card">
+    <div class="details-grid">
+        <div class="details-image">
+            @if (!string.IsNullOrWhiteSpace(Model.ImagenUrl))
+            {
+                <img src="@Model.ImagenUrl" alt="@Model.Nombre" />
+            }
+            else
+            {
+                <div class="details-placeholder">
+                    <i class="bi bi-image"></i>
+                    Sin imagen
+                </div>
+            }
+        </div>
+
+        <div>
+            <div class="details-title">@Model.Nombre</div>
+
+            <div class="details-category">
+                @(Model.Categoria != null ? Model.Categoria.Nombre : "Sin categoría")
+            </div>
+
+            <div class="details-price">₡ @((Model.Precio ?? 0).ToString("N2"))</div>
+
+            <div class="details-meta">
+                <div class="meta-box">
+                    <div class="meta-label">IVA</div>
+                    <div class="meta-value">@((Model.ImpuestoPorc ?? 0).ToString("N2")) %</div>
+                </div>
+
+                <div class="meta-box">
+                    <div class="meta-label">Stock</div>
+                    <div class="meta-value">@Model.Stock</div>
+                </div>
+            </div>
+
+            <div class="details-actions">
+                <a asp-controller="Catalogo" asp-action="Index" class="btn-secondary">Volver al catálogo</a>
+                <a asp-controller="Account" asp-action="Login" class="btn-main">Iniciar sesión</a>
+            </div>
+        </div>
+    </div>
+</div>

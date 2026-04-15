@@ -1,0 +1,353 @@
+﻿@model ProyectoPrograAvanzada.Models.Pedido
+
+@{
+    ViewData["Title"] = "Pago exitoso";
+}
+
+@section Styles {
+    <style>
+        .success-wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .success-banner {
+            background: linear-gradient(135deg, #eef9f1 0%, #ffffff 100%);
+            border: 1px solid #cfe8d5;
+            border-radius: 22px;
+            padding: 28px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            box-shadow: 0 8px 20px rgba(8, 76, 97, 0.05);
+            margin-bottom: 24px;
+        }
+
+        .success-icon {
+            width: 72px;
+            height: 72px;
+            min-width: 72px;
+            border-radius: 50%;
+            background: #dff3e5;
+            color: #18794e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+        }
+
+        .success-text h2 {
+            margin: 0 0 6px 0;
+            font-size: 28px;
+            font-weight: 700;
+            color: #084c61;
+        }
+
+        .success-text p {
+            margin: 0;
+            font-size: 15px;
+            color: #5f6b76;
+        }
+
+        .success-text strong {
+            color: #1e293b;
+        }
+
+        .content-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .custom-card {
+            background: #ffffff;
+            border: 1px solid #dbe7eb;
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: 0 8px 20px rgba(8, 76, 97, 0.05);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #084c61;
+            margin-bottom: 16px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            background: #f8fbfc;
+            border: 1px solid #dbe7eb;
+            border-radius: 14px;
+            padding: 14px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .pedido-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+            .pedido-table thead th {
+                background: #d7e6eb;
+                color: #084c61;
+                font-weight: 700;
+                border: none;
+                padding: 12px;
+                font-size: 14px;
+                white-space: nowrap;
+            }
+
+                .pedido-table thead th:first-child {
+                    border-top-left-radius: 12px;
+                    border-bottom-left-radius: 12px;
+                }
+
+                .pedido-table thead th:last-child {
+                    border-top-right-radius: 12px;
+                    border-bottom-right-radius: 12px;
+                }
+
+            .pedido-table tbody td {
+                background: #fff;
+                padding: 14px 12px;
+                border-top: 1px solid #edf2f5;
+                border-bottom: 1px solid #edf2f5;
+                color: #334155;
+                vertical-align: middle;
+            }
+
+                .pedido-table tbody td:first-child {
+                    border-left: 1px solid #edf2f5;
+                    border-top-left-radius: 12px;
+                    border-bottom-left-radius: 12px;
+                }
+
+                .pedido-table tbody td:last-child {
+                    border-right: 1px solid #edf2f5;
+                    border-top-right-radius: 12px;
+                    border-bottom-right-radius: 12px;
+                }
+
+        .product-name {
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .money-text {
+            font-weight: 700;
+            color: #084c61;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #edf2f5;
+            font-size: 15px;
+            color: #334155;
+        }
+
+            .summary-row:last-child {
+                border-bottom: none;
+                font-size: 20px;
+                font-weight: 700;
+                color: #084c61;
+            }
+
+        .summary-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        .actions {
+            margin-top: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-main,
+        .btn-secondary {
+            width: 100%;
+            border: none;
+            border-radius: 14px;
+            padding: 12px 16px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: 0.25s ease;
+        }
+
+        .btn-main {
+            background: #084c61;
+            color: white;
+        }
+
+            .btn-main:hover {
+                background: #063b4b;
+                color: white;
+            }
+
+        .btn-secondary {
+            background: #d7e6eb;
+            color: #084c61;
+        }
+
+            .btn-secondary:hover {
+                background: #c4dbe2;
+                color: #063b4b;
+            }
+
+        .helper-note {
+            margin-top: 14px;
+            font-size: 13px;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        @@media (max-width: 992px) {
+            .content-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .success-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+}
+
+<div class="success-wrapper">
+
+    <div class="success-banner">
+        <div class="success-icon">
+            <i class="bi bi-check-circle-fill"></i>
+        </div>
+
+        <div class="success-text">
+            <h2>Pago exitoso</h2>
+            <p>
+                Tu pedido <strong>#@Model.Id</strong> fue procesado correctamente y ya quedó registrado en el sistema.
+            </p>
+        </div>
+    </div>
+
+    <div class="content-layout">
+        <div class="custom-card">
+            <div class="section-title">Detalle del pedido</div>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <div class="info-label">Número de pedido</div>
+                    <div class="info-value">#@Model.Id</div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-label">Fecha</div>
+                    <div class="info-value">@Model.Fecha.ToString("dd/MM/yyyy HH:mm")</div>
+                </div>
+            </div>
+
+            <div class="section-title">Productos</div>
+
+            <div class="table-responsive">
+                <table class="pedido-table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio</th>
+                            <th>Total línea</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var detalle in Model.PedidoDetalles)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="product-name">@detalle.Producto.Nombre</span>
+                                </td>
+                                <td>@detalle.Cantidad</td>
+                                <td class="money-text">@detalle.PrecioUnit.ToString("C")</td>
+                                <td class="money-text">@detalle.TotalLinea.ToString("C")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="custom-card">
+            <div class="section-title">Resumen</div>
+
+            <div class="summary-badge">
+                @Model.PedidoDetalles.Sum(x => x.Cantidad) producto(s)
+            </div>
+
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span>@Model.Subtotal.ToString("C")</span>
+            </div>
+
+            <div class="summary-row">
+                <span>Impuestos</span>
+                <span>@Model.Impuestos.ToString("C")</span>
+            </div>
+
+            <div class="summary-row">
+                <span>Total</span>
+                <span>@Model.Total.ToString("C")</span>
+            </div>
+
+            <div class="actions">
+                <a href="@Url.Action("Index", "Catalogo")" class="btn-main">
+                    <i class="bi bi-shop"></i>
+                    Volver al catálogo
+                </a>
+
+                <a href="@Url.Action("Index", "Carrito")" class="btn-secondary">
+                    <i class="bi bi-cart"></i>
+                    Ir al carrito
+                </a>
+            </div>
+
+            <div class="helper-note">
+                Gracias por su compra. Puede continuar explorando otros productos cuando guste.
+            </div>
+        </div>
+    </div>
+</div>

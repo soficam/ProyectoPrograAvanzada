@@ -1,0 +1,414 @@
+﻿@model IEnumerable<ProyectoPrograAvanzada.Models.Producto>
+
+@{
+    ViewData["Title"] = "Productos";
+
+    var categorias = ViewBag.Categorias as List<ProyectoPrograAvanzada.Models.Categorium> ?? new List<ProyectoPrograAvanzada.Models.Categorium>();
+
+    string busqueda = ViewBag.Busqueda?.ToString() ?? "";
+    int? categoriaSeleccionada = ViewBag.CategoriaId as int?;
+    decimal? precioMin = ViewBag.PrecioMin as decimal?;
+    decimal? precioMax = ViewBag.PrecioMax as decimal?;
+}
+
+<style>
+.page-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+flex-wrap: wrap;
+gap: 15px;
+margin-bottom: 24px;
+}
+
+.page-title h2 {
+margin: 0;
+font-size: 28px;
+font-weight: 700;
+color: #084c61;
+}
+
+.page-title p {
+margin: 6px 0 0 0;
+color: #6c757d;
+font-size: 14px;
+}
+
+.btn-add {
+background-color: #084c61;
+color: white;
+border: none;
+border-radius: 14px;
+padding: 10px 18px;
+font-weight: 600;
+text-decoration: none;
+display: inline-flex;
+align-items: center;
+gap: 8px;
+transition: 0.25s ease;
+}
+
+.btn-add:hover {
+background-color: #063b4b;
+color: white;
+transform: translateY(-1px);
+}
+
+.table-card {
+background-color: #f8fbfc;
+border-radius: 18px;
+padding: 20px;
+box-shadow: inset 0 0 0 1px rgba(8, 76, 97, 0.06);
+}
+
+.custom-table {
+margin: 0;
+vertical-align: middle;
+min-width: 1100px;
+}
+
+.custom-table thead th {
+background-color: #d7e6eb;
+color: #084c61;
+font-weight: 700;
+border: none;
+padding: 14px;
+font-size: 14px;
+white-space: nowrap;
+}
+
+.custom-table thead th:first-child {
+border-top-left-radius: 14px;
+border-bottom-left-radius: 14px;
+}
+
+.custom-table thead th:last-child {
+border-top-right-radius: 14px;
+border-bottom-right-radius: 14px;
+}
+
+.custom-table tbody tr {
+background-color: white;
+transition: 0.2s ease;
+}
+
+.custom-table tbody tr:hover {
+background-color: #f1f7f9;
+}
+
+.custom-table td {
+padding: 16px 14px;
+border-top: 10px solid transparent;
+color: #334155;
+}
+
+.product-cell {
+display: flex;
+align-items: center;
+gap: 12px;
+min-width: 220px;
+}
+
+.product-image {
+width: 52px;
+height: 52px;
+border-radius: 12px;
+object-fit: cover;
+border: 1px solid #dbe7eb;
+background-color: #eef4f6;
+}
+
+.product-placeholder {
+width: 52px;
+height: 52px;
+border-radius: 12px;
+background-color: #d7e6eb;
+color: #084c61;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 20px;
+border: 1px solid #dbe7eb;
+}
+
+.product-name {
+font-weight: 600;
+color: #1e293b;
+}
+
+.product-category {
+font-size: 12px;
+color: #64748b;
+margin-top: 2px;
+}
+
+.status-badge,
+.stock-badge,
+.category-badge {
+display: inline-block;
+padding: 6px 12px;
+border-radius: 999px;
+font-size: 12px;
+font-weight: 700;
+white-space: nowrap;
+}
+
+.status-active {
+background-color: #d1f0dd;
+color: #18794e;
+}
+
+.status-inactive {
+background-color: #f8d7da;
+color: #842029;
+}
+
+.stock-ok {
+background-color: #dbeafe;
+color: #1d4ed8;
+}
+
+.stock-low {
+background-color: #fff3cd;
+color: #946200;
+}
+
+.stock-empty {
+background-color: #fee2e2;
+color: #dc2626;
+}
+
+.category-badge {
+background-color: #e0f2fe;
+color: #0369a1;
+}
+
+.price-text {
+font-weight: 700;
+color: #084c61;
+white-space: nowrap;
+}
+
+.tax-text {
+font-weight: 600;
+color: #475569;
+}
+
+.actions {
+display: flex;
+gap: 8px;
+flex-wrap: wrap;
+}
+
+.btn-action {
+width: 36px;
+height: 36px;
+border-radius: 10px;
+border: none;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+text-decoration: none;
+transition: 0.2s ease;
+font-size: 15px;
+}
+
+.btn-edit {
+background-color: #dbeafe;
+color: #1d4ed8;
+}
+
+.btn-edit:hover {
+background-color: #bfdbfe;
+color: #1d4ed8;
+}
+
+.btn-details {
+background-color: #e0f2fe;
+color: #0369a1;
+}
+
+.btn-details:hover {
+background-color: #bae6fd;
+color: #0369a1;
+}
+
+.btn-delete {
+background-color: #fee2e2;
+color: #dc2626;
+}
+
+.btn-delete:hover {
+background-color: #fecaca;
+color: #dc2626;
+}
+
+.empty-state {
+text-align: center;
+padding: 40px 20px;
+color: #6b7280;
+}
+
+.empty-state i {
+font-size: 42px;
+color: #7fa5b1;
+margin-bottom: 12px;
+display: block;
+}
+</style>
+
+<div class="page-header">
+
+    <div class="page-title">
+        <h2>Productos</h2>
+        <p>Gestione los productos registrados dentro del sistema.</p>
+    </div>
+
+    <a asp-action="Create" class="btn-add">
+        <i class="bi bi-plus-circle"></i>
+        Nuevo producto
+    </a>
+</div>
+<form method="get" asp-action="Index" style="margin-bottom:20px;">
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+
+        <input type="text" name="busqueda" value="@busqueda" placeholder="Buscar producto"
+               style="padding:10px; border-radius:10px; border:1px solid #ccc;" />
+
+        <select name="categoriaId" style="padding:10px; border-radius:10px;">
+            <option value="">Todas</option>
+            @foreach (var cat in categorias)
+            {
+                <option value="@cat.Id" selected="@(categoriaSeleccionada == cat.Id)">
+                    @cat.Nombre
+                </option>
+            }
+        </select>
+
+        <input type="number" name="precioMin" value="@precioMin" placeholder="Precio Min"
+               style="padding:10px; border-radius:10px; border:1px solid #ccc;" />
+
+        <input type="number" name="precioMax" value="@precioMax" placeholder="Precio Max"
+               style="padding:10px; border-radius:10px; border:1px solid #ccc;" />
+
+        <button type="submit" class="btn-add">
+            Buscar
+        </button>
+
+        <a asp-action="Index" class="btn-add" style="background:#ccc; color:#000;">
+            Limpiar
+        </a>
+
+    </div>
+</form>
+
+<div class="table-card">
+    @if (Model != null && Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Impuesto</th>
+                        <th>Stock</th>
+                        <th>Categoría</th>
+                        <th>Estado</th>
+                        <th style="width: 160px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="product-cell">
+                                    @if (!string.IsNullOrWhiteSpace(item.ImagenUrl))
+                                    {
+                                        <img src="@item.ImagenUrl" class="product-image" />
+                                    }
+                                    else
+                                    {
+                                        <div class="product-placeholder">
+                                            <i class="bi bi-image"></i>
+                                        </div>
+                                    }
+
+                                    <div>
+                                        <div class="product-name">@item.Nombre</div>
+                                        <div class="product-category">ID: @item.Id</div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="price-text">₡ @item.Precio</span>
+                            </td>
+
+                            <td>
+                                <span class="tax-text">@item.ImpuestoPorc %</span>
+                            </td>
+
+                            <td>
+                                @if (item.Stock <= 0)
+                                {
+                                    <span class="stock-badge stock-empty">Sin stock</span>
+                                }
+                                else if (item.Stock <= 5)
+                                {
+                                    <span class="stock-badge stock-low">Bajo: @item.Stock</span>
+                                }
+                                else
+                                {
+                                    <span class="stock-badge stock-ok">@item.Stock unidades</span>
+                                }
+                            </td>
+
+                            <td>
+                                <span class="category-badge">
+                                    @(item.Categoria != null ? item.Categoria.Nombre : "Sin categoría")
+                                </span>
+                            </td>
+
+                            <td>
+                                @if (item.Activo)
+                                {
+                                    <span class="status-badge status-active">Activo</span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge status-inactive">Inactivo</span>
+                                }
+                            </td>
+
+                            <td>
+                                <div class="actions">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn-action btn-edit">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn-action btn-details">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn-action btn-delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="bi bi-box-seam"></i>
+            <h5>No hay productos registrados</h5>
+            <p>Cuando agregue un nuevo producto, aparecerá listado aquí.</p>
+        </div>
+    }
+</div>

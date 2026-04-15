@@ -1,0 +1,356 @@
+﻿@model ProyectoPrograAvanzada.Models.Producto
+
+@{
+    ViewData["Title"] = "Detalle de producto";
+}
+
+<style>
+    .details-page-header {
+        margin-bottom: 24px;
+    }
+
+        .details-page-header h2 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            color: #084c61;
+        }
+
+        .details-page-header p {
+            margin: 6px 0 0 0;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+    .details-card {
+        background-color: #f8fbfc;
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: inset 0 0 0 1px rgba(8, 76, 97, 0.06);
+    }
+
+    .product-image-panel {
+        background-color: #ffffff;
+        border: 1px solid #dbe7eb;
+        border-radius: 18px;
+        padding: 20px;
+        height: 100%;
+    }
+
+    .product-image-box {
+        width: 100%;
+        height: 600px;
+        border-radius: 16px;
+        background-color: #eef4f6;
+        border: 1px solid #dbe7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+        .product-image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .product-image-placeholder {
+        text-align: center;
+        color: #7fa5b1;
+    }
+
+        .product-image-placeholder i {
+            font-size: 42px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+    .details-info-panel {
+        background-color: #ffffff;
+        border: 1px solid #dbe7eb;
+        border-radius: 18px;
+        padding: 24px;
+        height: 100%;
+    }
+
+    .product-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 8px;
+    }
+
+    .product-subtitle {
+        font-size: 14px;
+        color: #64748b;
+        margin-bottom: 20px;
+    }
+
+    .price-box {
+        background-color: #e0f2f1;
+        border-radius: 16px;
+        padding: 16px 18px;
+        margin-bottom: 20px;
+    }
+
+    .price-label {
+        font-size: 13px;
+        color: #0f766e;
+        margin-bottom: 4px;
+    }
+
+    .price-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: #084c61;
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .detail-item {
+        background-color: #f8fbfc;
+        border: 1px solid #e5eef2;
+        border-radius: 14px;
+        padding: 14px 16px;
+    }
+
+    .detail-label {
+        font-size: 13px;
+        color: #64748b;
+        margin-bottom: 6px;
+    }
+
+    .detail-value {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .status-badge,
+    .category-badge,
+    .stock-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .status-active {
+        background-color: #d1f0dd;
+        color: #18794e;
+    }
+
+    .status-inactive {
+        background-color: #f8d7da;
+        color: #842029;
+    }
+
+    .category-badge {
+        background-color: #e0f2fe;
+        color: #0369a1;
+    }
+
+    .stock-ok {
+        background-color: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .stock-low {
+        background-color: #fff3cd;
+        color: #946200;
+    }
+
+    .stock-empty {
+        background-color: #fee2e2;
+        color: #dc2626;
+    }
+
+    .url-box {
+        margin-top: 18px;
+        background-color: #f8fbfc;
+        border: 1px solid #e5eef2;
+        border-radius: 14px;
+        padding: 14px 16px;
+    }
+
+    .url-label {
+        font-size: 13px;
+        color: #64748b;
+        margin-bottom: 6px;
+    }
+
+    .url-value {
+        font-size: 14px;
+        color: #475569;
+        word-break: break-all;
+    }
+
+    .details-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 26px;
+    }
+
+    .btn-edit-custom {
+        background-color: #084c61;
+        color: #fff;
+        border: none;
+        border-radius: 14px;
+        padding: 11px 22px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.25s ease;
+    }
+
+        .btn-edit-custom:hover {
+            background-color: #063b4b;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+    .btn-back-custom {
+        background-color: #d7e6eb;
+        color: #084c61;
+        border: none;
+        border-radius: 14px;
+        padding: 11px 20px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.25s ease;
+    }
+
+        .btn-back-custom:hover {
+            background-color: #c4dbe2;
+            color: #063b4b;
+        }
+
+    @@media (max-width: 768px) {
+        .details-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .product-image-box {
+            height: 240px;
+        }
+    }
+</style>
+
+<div class="details-page-header">
+    <h2>Detalle de producto</h2>
+    <p>Consulte la información completa del producto seleccionado.</p>
+</div>
+
+<div class="details-card">
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="product-image-panel">
+                <div class="product-image-box">
+                    @if (!string.IsNullOrWhiteSpace(Model.ImagenUrl))
+                    {
+                        <img src="@Model.ImagenUrl" alt="@Model.Nombre" />
+                    }
+                    else
+                    {
+                        <div class="product-image-placeholder">
+                            <i class="bi bi-image"></i>
+                            Sin imagen disponible
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="details-info-panel">
+                <div class="product-title">@Model.Nombre</div>
+                <div class="product-subtitle">ID del producto: @Model.Id</div>
+
+                <div class="price-box">
+                    <div class="price-label">Precio del producto</div>
+                    <div class="price-value">₡ @Model.Precio</div>
+                </div>
+
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Categoría</div>
+                        <div class="detail-value">
+                            <span class="category-badge">
+                                @(Model.Categoria != null ? Model.Categoria.Nombre : "Sin categoría")
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">Estado</div>
+                        <div class="detail-value">
+                            @if (Model.Activo)
+                            {
+                                <span class="status-badge status-active">Activo</span>
+                            }
+                            else
+                            {
+                                <span class="status-badge status-inactive">Inactivo</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">Impuesto</div>
+                        <div class="detail-value">@Model.ImpuestoPorc %</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">Stock</div>
+                        <div class="detail-value">
+                            @if (Model.Stock <= 0)
+                            {
+                                <span class="stock-badge stock-empty">Sin stock</span>
+                            }
+                            else if (Model.Stock <= 5)
+                            {
+                                <span class="stock-badge stock-low">Bajo: @Model.Stock</span>
+                            }
+                            else
+                            {
+                                <span class="stock-badge stock-ok">@Model.Stock unidades</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="url-box">
+                    <div class="url-label">URL de imagen</div>
+                    <div class="url-value">
+                        @(string.IsNullOrWhiteSpace(Model.ImagenUrl) ? "No registrada" : Model.ImagenUrl)
+                    </div>
+                </div>
+
+                <div class="details-actions">
+                    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn-edit-custom">
+                        <i class="bi bi-pencil-square"></i>
+                        Editar producto
+                    </a>
+
+                    <a asp-action="Index" class="btn-back-custom">
+                        <i class="bi bi-arrow-left"></i>
+                        Volver al listado
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

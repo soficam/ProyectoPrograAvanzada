@@ -1,0 +1,305 @@
+﻿@model ProyectoPrograAvanzada.Models.ViewModels.ClienteRegisterViewModel
+
+@{
+    ViewData["Title"] = "Registro";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pedidos 360 - Registro</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #e9e9e9;
+            min-height: 100vh;
+        }
+
+        .register-wrapper {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-banner {
+            background-color: #003f52;
+            height: 260px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .top-banner img {
+            max-width: 420px;
+            width: 100%;
+            height: auto;
+        }
+
+        .register-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+        }
+
+        .register-box {
+            width: 100%;
+            max-width: 650px;
+            background: transparent;
+        }
+
+        .register-title {
+            text-align: center;
+            color: #084c61;
+            font-size: 34px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .register-subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 28px;
+            font-size: 14px;
+        }
+
+        .register-card {
+            background-color: #f8fbfc;
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: inset 0 0 0 1px rgba(8, 76, 97, 0.06);
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+        }
+
+        .col-6 {
+            flex: 1 1 calc(50% - 9px);
+        }
+
+        .col-12 {
+            flex: 1 1 100%;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .form-control {
+            width: 100%;
+            height: 46px;
+            border: 1px solid #cfe0e6;
+            outline: none;
+            border-radius: 14px;
+            padding: 0 14px;
+            background-color: white;
+            color: #1e293b;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            border-color: #7fa5b1;
+            box-shadow: 0 0 0 0.2rem rgba(127, 165, 177, 0.25);
+        }
+
+        textarea.form-control {
+            height: 100px;
+            padding-top: 12px;
+            resize: vertical;
+        }
+
+        .btn-row {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-main {
+            min-width: 220px;
+            height: 42px;
+            border-radius: 20px;
+            border: 2px solid #cfd8dc;
+            background-color: #00586f;
+            color: white;
+            font-size: 18px;
+            font-style: italic;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .btn-main:hover {
+            background-color: #00485b;
+        }
+
+        .btn-secondary {
+            min-width: 220px;
+            height: 42px;
+            border-radius: 20px;
+            border: none;
+            background-color: #d7e6eb;
+            color: #084c61;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-secondary:hover {
+            background-color: #c4dbe2;
+        }
+
+        .validation-summary-errors {
+            background-color: #fdeaea;
+            border: 1px solid #f5c2c7;
+            color: #b00020;
+            font-size: 13px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+        }
+
+        .validation-summary-errors ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .field-validation-error {
+            color: #b00020;
+            font-size: 13px;
+            margin-top: 6px;
+            display: block;
+        }
+
+        @@media (max-width: 768px) {
+            .col-6 {
+                flex: 1 1 100%;
+            }
+
+            .top-banner {
+                height: 220px;
+            }
+
+            .top-banner img {
+                max-width: 320px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-wrapper">
+        <div class="top-banner">
+            <img src="~/img/logo-pedidos360.png" alt="Pedidos 360" />
+        </div>
+
+        <div class="register-container">
+            <div class="register-box">
+                <div class="register-title">Crear cuenta</div>
+                <div class="register-subtitle">Registre sus datos para acceder como cliente.</div>
+
+                <div class="register-card">
+                    <form asp-action="Register" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="Nombre" class="form-label"></label>
+                                    <input asp-for="Nombre" class="form-control" />
+                                    <span asp-validation-for="Nombre"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="Cedula" class="form-label"></label>
+                                    <input asp-for="Cedula" class="form-control" />
+                                    <span asp-validation-for="Cedula"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="Correo" class="form-label"></label>
+                                    <input asp-for="Correo" class="form-control" />
+                                    <span asp-validation-for="Correo"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="Telefono" class="form-label"></label>
+                                    <input asp-for="Telefono" class="form-control" />
+                                    <span asp-validation-for="Telefono"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="Direccion" class="form-label"></label>
+                                    <textarea asp-for="Direccion" class="form-control"></textarea>
+                                    <span asp-validation-for="Direccion"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="Contrasena" class="form-label"></label>
+                                    <input asp-for="Contrasena" type="password" class="form-control" />
+                                    <span asp-validation-for="Contrasena"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="ConfirmarContrasena" class="form-label"></label>
+                                    <input asp-for="ConfirmarContrasena" type="password" class="form-control" />
+                                    <span asp-validation-for="ConfirmarContrasena"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="btn-row">
+                            <button type="submit" class="btn-main">Registrarse</button>
+                            <a asp-controller="Catalogo" asp-action="Index" class="btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+</body>
+</html>

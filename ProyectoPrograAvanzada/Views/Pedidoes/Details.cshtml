@@ -1,0 +1,156 @@
+﻿@model ProyectoPrograAvanzada.Models.Pedido
+
+@{
+    ViewData["Title"] = "Detalle de pedido";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/style-pedido-details.css" asp-append-version="true" />
+}
+
+<div class="form-page-header">
+    <h2>Detalle de pedido</h2>
+    <p>Consulte la información general y el desglose completo del pedido.</p>
+</div>
+
+<div class="pedido-card">
+    <div class="section-title">Información general</div>
+
+    <div class="info-grid mb-4">
+        <div class="info-box">
+            <div class="info-label">Pedido</div>
+            <div class="info-value">#@Model.Id</div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-label">Fecha</div>
+            <div class="info-value">@Model.Fecha.ToString("dd/MM/yyyy hh:mm tt")</div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-label">Cliente</div>
+            <div class="info-value">@(Model.Cliente != null ? Model.Cliente.Nombre : "Sin cliente")</div>
+            <div class="info-subtext">ID: @Model.ClienteId</div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-label">Usuario</div>
+            <div class="info-value">@(Model.Usuario != null ? Model.Usuario.Nombre : "Sin usuario")</div>
+            <div class="info-subtext">ID: @Model.UsuarioId</div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-label">Estado</div>
+            <div class="info-value">
+                @{
+                    var estadoTexto = Model.Estado?.Trim() ?? "Sin estado";
+                    var estadoClase = "status-pendiente";
+
+                    if (estadoTexto.Equals("En proceso", StringComparison.OrdinalIgnoreCase))
+                    {
+                        estadoClase = "status-proceso";
+                    }
+                    else if (estadoTexto.Equals("Entregado", StringComparison.OrdinalIgnoreCase))
+                    {
+                        estadoClase = "status-entregado";
+                    }
+                    else if (estadoTexto.Equals("Cancelado", StringComparison.OrdinalIgnoreCase))
+                    {
+                        estadoClase = "status-cancelado";
+                    }
+                }
+
+                <span class="status-badge @estadoClase">@estadoTexto</span>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-label">Activo</div>
+            <div class="info-value">
+                @if (Model.Activo)
+                {
+                    <span class="active-badge active-yes">Sí</span>
+                }
+                else
+                {
+                    <span class="active-badge active-no">No</span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">Productos del pedido</div>
+
+    <div class="table-card mb-4">
+        @if (Model.PedidoDetalles != null && Model.PedidoDetalles.Any())
+        {
+            <div class="table-responsive">
+                <table class="table custom-table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio unit.</th>
+                            <th>Descuento</th>
+                            <th>IVA %</th>
+                            <th>Total línea</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.PedidoDetalles)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="product-name">@(item.Producto != null ? item.Producto.Nombre : "Sin producto")</div>
+                                    <div class="product-subtext">ID: @item.ProductoId</div>
+                                </td>
+                                <td>@item.Cantidad</td>
+                                <td>₡ @item.PrecioUnit.ToString("N2")</td>
+                                <td>₡ @((item.Descuento ?? 0).ToString("N2"))</td>
+                                <td>@item.ImpuestoPorc.ToString("N2") %</td>
+                                <td class="money-text">₡ @item.TotalLinea.ToString("N2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="bi bi-receipt"></i>
+                <h5>Este pedido no tiene detalles registrados</h5>
+                <p>No se encontraron productos asociados a este pedido.</p>
+            </div>
+        }
+    </div>
+
+    <div class="section-title">Resumen</div>
+
+    <div class="summary-card mb-4">
+        <div class="summary-row">
+            <span>Subtotal</span>
+            <span>₡ @Model.Subtotal.ToString("N2")</span>
+        </div>
+        <div class="summary-row">
+            <span>Impuestos</span>
+            <span>₡ @Model.Impuestos.ToString("N2")</span>
+        </div>
+        <div class="summary-row">
+            <span>Total</span>
+            <span>₡ @Model.Total.ToString("N2")</span>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-save-custom">
+            <i class="bi bi-pencil-square"></i>
+            Editar pedido
+        </a>
+
+        <a asp-action="Index" class="btn-back-custom">
+            <i class="bi bi-arrow-left"></i>
+            Volver al listado
+        </a>
+    </div>
+</div>

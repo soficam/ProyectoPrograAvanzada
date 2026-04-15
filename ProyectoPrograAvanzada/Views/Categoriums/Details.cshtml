@@ -1,0 +1,178 @@
+﻿@model ProyectoPrograAvanzada.Models.Categorium
+
+@{
+    ViewData["Title"] = "Detalle de categoría";
+}
+
+<style>
+    .details-page-header {
+        margin-bottom: 24px;
+    }
+
+        .details-page-header h2 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            color: #084c61;
+        }
+
+        .details-page-header p {
+            margin: 6px 0 0 0;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+    .details-card {
+        background-color: #f8fbfc;
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: inset 0 0 0 1px rgba(8, 76, 97, 0.06);
+        max-width: 760px;
+    }
+
+    .details-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #084c61;
+        margin-bottom: 18px;
+    }
+
+    .details-box {
+        background-color: #ffffff;
+        border: 1px solid #dbe7eb;
+        border-radius: 18px;
+        padding: 22px;
+    }
+
+    .detail-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 14px 0;
+        border-bottom: 1px solid #edf2f5;
+    }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+    .detail-label {
+        color: #64748b;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .detail-value {
+        color: #1e293b;
+        font-weight: 600;
+        font-size: 15px;
+        text-align: right;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .status-active {
+        background-color: #d1f0dd;
+        color: #18794e;
+    }
+
+    .status-inactive {
+        background-color: #f8d7da;
+        color: #842029;
+    }
+
+    .details-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 26px;
+    }
+
+    .btn-edit-custom {
+        background-color: #084c61;
+        color: #fff;
+        border: none;
+        border-radius: 14px;
+        padding: 11px 22px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.25s ease;
+    }
+
+        .btn-edit-custom:hover {
+            background-color: #063b4b;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+    .btn-back-custom {
+        background-color: #d7e6eb;
+        color: #084c61;
+        border: none;
+        border-radius: 14px;
+        padding: 11px 20px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.25s ease;
+    }
+
+        .btn-back-custom:hover {
+            background-color: #c4dbe2;
+            color: #063b4b;
+        }
+</style>
+
+<div class="details-page-header">
+    <h2>Detalle de categoría</h2>
+    <p>Consulte la información completa de la categoría seleccionada.</p>
+</div>
+
+<div class="details-card">
+    <div class="details-title">Información de la categoría</div>
+
+    <div class="details-box">
+        <div class="detail-row">
+            <div class="detail-label">Nombre</div>
+            <div class="detail-value">@Model.Nombre</div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">Estado</div>
+            <div class="detail-value">
+                @if (Model.Activo)
+                {
+                    <span class="status-badge status-active">Activa</span>
+                }
+                else
+                {
+                    <span class="status-badge status-inactive">Inactiva</span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="details-actions">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn-edit-custom">
+            <i class="bi bi-pencil-square"></i>
+            Editar categoría
+        </a>
+
+        <a asp-action="Index" class="btn-back-custom">
+            <i class="bi bi-arrow-left"></i>
+            Volver al listado
+        </a>
+    </div>
+</div>

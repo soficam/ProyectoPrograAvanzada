@@ -1,0 +1,116 @@
+﻿@model ProyectoPrograAvanzada.Models.Pedido
+
+@{
+    ViewData["Title"] = "Eliminar pedido";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/style-pedido-delete.css" asp-append-version="true" />
+}
+
+<div class="form-page-header">
+    <h2>Eliminar pedido</h2>
+    <p>Confirme si desea eliminar este pedido de la vista.</p>
+</div>
+
+<div class="pedido-card">
+
+    <div class="warning-box">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <div>
+            <strong>Advertencia</strong>
+            <p>Este pedido será marcado como inactivo, pero aún podrá consultarse en la base de datos.</p>
+        </div>
+    </div>
+
+    <div class="section-title">Información del pedido</div>
+
+    <div class="info-grid mb-4">
+
+        <div class="info-box">
+            <div class="info-label">Pedido</div>
+            <div class="info-value">#@Model.Id</div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-label">Fecha</div>
+            <div class="info-value">@Model.Fecha.ToString("dd/MM/yyyy hh:mm tt")</div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-label">Cliente</div>
+            <div class="info-value">
+                @(Model.Cliente != null ? Model.Cliente.Nombre : "Sin cliente")
+            </div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-label">Usuario</div>
+            <div class="info-value">
+                @(Model.Usuario != null ? Model.Usuario.Nombre : "Sin usuario")
+            </div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-label">Estado</div>
+            <div class="info-value">@Model.Estado</div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-label">Activo</div>
+            <div class="info-value">
+                @if (Model.Activo)
+                {
+                    <span class="active-badge active-yes">Sí</span>
+                }
+                else
+                {
+                    <span class="active-badge active-no">No</span>
+                }
+            </div>
+        </div>
+
+    </div>
+
+    <div class="section-title">Resumen</div>
+
+    <div class="summary-card mb-4">
+
+        <div class="summary-row">
+            <span>Subtotal</span>
+            <span>₡ @Model.Subtotal.ToString("N2")</span>
+        </div>
+
+        <div class="summary-row">
+            <span>Impuestos</span>
+            <span>₡ @Model.Impuestos.ToString("N2")</span>
+        </div>
+
+        <div class="summary-row">
+            <span>Total</span>
+            <span>₡ @Model.Total.ToString("N2")</span>
+        </div>
+
+    </div>
+
+    <form asp-action="Delete">
+
+        <input type="hidden" asp-for="Id" />
+
+        <div class="form-actions">
+
+            <button type="submit" class="btn-delete-custom">
+                <i class="bi bi-trash"></i>
+                Eliminar pedido
+            </button>
+
+            <a asp-action="Index" class="btn-back-custom">
+                <i class="bi bi-arrow-left"></i>
+                Cancelar
+            </a>
+
+        </div>
+
+    </form>
+
+</div>

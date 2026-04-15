@@ -1,0 +1,319 @@
+﻿@model ProyectoPrograAvanzada.Models.ViewModels.CarritoViewModel
+
+@{
+    ViewData["Title"] = "Pago";
+}
+
+@section Styles {
+    <style>
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+            .page-header h2 {
+                margin: 0;
+                font-size: 28px;
+                font-weight: 700;
+                color: #084c61;
+            }
+
+            .page-header p {
+                margin: 6px 0 0 0;
+                color: #6c757d;
+                font-size: 14px;
+            }
+
+        .payment-layout {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 20px;
+        }
+
+        .payment-card,
+        .summary-card {
+            background: #ffffff;
+            border: 1px solid #dbe7eb;
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: 0 8px 20px rgba(8, 76, 97, 0.05);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #084c61;
+            margin-bottom: 16px;
+        }
+
+        .custom-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #334155;
+            font-size: 14px;
+        }
+
+        .custom-input,
+        .custom-select {
+            width: 100%;
+            height: 46px;
+            border-radius: 12px;
+            border: 1px solid #cfe0e6;
+            padding: 0 12px;
+            background: white;
+            color: #1e293b;
+            font-size: 14px;
+            transition: 0.2s ease;
+        }
+
+            .custom-input:focus,
+            .custom-select:focus {
+                outline: none;
+                border-color: #7fa5b1;
+                box-shadow: 0 0 0 .2rem rgba(127,165,177,.25);
+            }
+
+        .payment-method-box {
+            background: #f8fbfc;
+            border: 1px solid #dbe7eb;
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 18px;
+        }
+
+        .method-form {
+            background: #f8fbfc;
+            border: 1px solid #dbe7eb !important;
+            border-radius: 16px !important;
+            padding: 18px !important;
+            margin-top: 12px;
+        }
+
+            .method-form h5 {
+                color: #084c61;
+                font-weight: 700;
+                margin-bottom: 6px;
+            }
+
+        .method-note {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+
+        .summary-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #084c61;
+            margin-bottom: 16px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #edf2f5;
+            font-size: 15px;
+            color: #334155;
+        }
+
+            .summary-row:last-child {
+                border-bottom: none;
+                font-size: 19px;
+                font-weight: 700;
+                color: #084c61;
+            }
+
+        .summary-count {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 999px;
+            padding: 5px 10px;
+            margin-bottom: 14px;
+        }
+
+        .btn-confirm {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 14px;
+            border: none;
+            background: #084c61;
+            color: white;
+            font-weight: 700;
+            transition: 0.25s ease;
+        }
+
+            .btn-confirm:hover {
+                background: #063b4b;
+            }
+
+        .btn-paypal {
+            width: 100%;
+            border: none;
+            border-radius: 14px;
+            padding: 12px 16px;
+            font-weight: 700;
+            background: #d7e6eb;
+            color: #084c61;
+            transition: 0.25s ease;
+        }
+
+            .btn-paypal:hover {
+                background: #c4dbe2;
+                color: #063b4b;
+            }
+
+        .btn-back {
+            width: 100%;
+            margin-top: 10px;
+            padding: 11px 16px;
+            border-radius: 14px;
+            border: none;
+            background: #eef4f6;
+            color: #084c61;
+            font-weight: 700;
+            transition: 0.25s ease;
+        }
+
+            .btn-back:hover {
+                background: #dbe7eb;
+                color: #063b4b;
+            }
+
+        .secure-box {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            color: #9a3412;
+            padding: 12px 14px;
+            border-radius: 14px;
+            font-size: 13px;
+            margin-top: 16px;
+        }
+
+        @@media (max-width: 992px) {
+            .payment-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+}
+
+<div class="page-header">
+    <h2>Pago</h2>
+    <p>Seleccione un método de pago y confirme su compra.</p>
+</div>
+
+<div class="payment-layout">
+    <div class="payment-card">
+        <form action="/Pago/ProcesarPago" method="post">
+            @Html.AntiForgeryToken()
+
+            @for (int i = 0; i < Model.Items.Count; i++)
+            {
+                <input type="hidden" name="Items[@i].ProductoId" value="@Model.Items[i].ProductoId" />
+                <input type="hidden" name="Items[@i].Cantidad" value="@Model.Items[i].Cantidad" />
+                <input type="hidden" name="Items[@i].Precio" value="@Model.Items[i].Precio" />
+                <input type="hidden" name="Items[@i].ImpuestoPorc" value="@Model.Items[i].ImpuestoPorc" />
+                <input type="hidden" name="Items[@i].Total" value="@Model.Items[i].Total" />
+            }
+
+            <div class="section-title">Método de pago</div>
+
+            <div class="payment-method-box">
+                <label class="custom-label" for="metodoPago">Seleccione una opción</label>
+                <select id="metodoPago" name="Metodo" class="custom-select">
+                    <option value="">Seleccione...</option>
+                    <option value="Tarjeta">Tarjeta</option>
+                    <option value="PayPal">PayPal</option>
+                </select>
+            </div>
+
+            <div id="tarjetaForm" class="method-form" style="display:none;">
+                <h5>Pago con tarjeta</h5>
+                <div class="method-note">Modo demostración: los datos son solo visuales para la interfaz.</div>
+
+                <div class="mb-3">
+                    <label class="custom-label">Número de tarjeta</label>
+                    <input name="NumeroTarjeta" class="custom-input" value="4111111111111111" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="custom-label">Nombre en la tarjeta</label>
+                    <input name="NombreTarjeta" class="custom-input" value="Demo User" />
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label class="custom-label">Expiración</label>
+                        <input name="Expiracion" class="custom-input" value="12/30" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="custom-label">CVV</label>
+                        <input name="CVV" class="custom-input" type="password" value="123" />
+                    </div>
+                </div>
+            </div>
+
+            <div id="paypalForm" class="method-form text-center" style="display:none;">
+                <h5>Pago con PayPal</h5>
+                <div class="method-note">Modo demostración: se simula el uso de una cuenta PayPal.</div>
+                <input type="hidden" name="PaypalEmail" value="demo@paypal.com" />
+                <button type="submit" name="Metodo" value="PayPal" class="btn-paypal">
+                    Continuar con PayPal
+                </button>
+            </div>
+
+            <div class="secure-box">
+                La confirmación del pago se procesa según el método seleccionado. Esta interfaz puede adaptarse luego a la lógica funcional del proyecto.
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn-confirm">Confirmar pago</button>
+                <button type="button" class="btn-back" onclick="history.back()">Volver</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="summary-card">
+        <div class="summary-title">Resumen de compra</div>
+
+        <div class="summary-count">
+            @Model.CantidadProductos producto(s)
+        </div>
+
+        <div class="summary-row">
+            <span>Subtotal</span>
+            <span>₡ @Model.Subtotal.ToString("N2")</span>
+        </div>
+
+        <div class="summary-row">
+            <span>Impuestos</span>
+            <span>₡ @Model.Impuestos.ToString("N2")</span>
+        </div>
+
+        <div class="summary-row">
+            <span>Total</span>
+            <span>₡ @Model.Total.ToString("N2")</span>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById("metodoPago").addEventListener("change", function () {
+            var metodo = this.value;
+            document.querySelectorAll(".method-form").forEach(f => f.style.display = "none");
+
+            if (metodo === "Tarjeta") {
+                document.getElementById("tarjetaForm").style.display = "block";
+            } else if (metodo === "PayPal") {
+                document.getElementById("paypalForm").style.display = "block";
+            }
+        });
+    </script>
+}

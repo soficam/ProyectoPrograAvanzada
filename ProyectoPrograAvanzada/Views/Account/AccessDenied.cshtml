@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "Acceso denegado";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Acceso denegado</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #e9e9e9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .access-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            text-align: center;
+            max-width: 420px;
+        }
+
+            .access-card h1 {
+                color: #084c61;
+                margin-bottom: 12px;
+            }
+
+            .access-card p {
+                color: #64748b;
+                margin-bottom: 24px;
+            }
+
+        .btn-back {
+            background-color: #084c61;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 20px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+            .btn-back:hover {
+                background-color: #063b4b;
+            }
+    </style>
+</head>
+<body>
+    <div class="access-card">
+        <h1>Acceso denegado</h1>
+        <p>No tiene permisos para acceder a esta sección del sistema.</p>
+        <a asp-controller="Home" asp-action="Index" class="btn-back">Volver al dashboard</a>
+    </div>
+</body>
+</html>

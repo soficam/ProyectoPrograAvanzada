@@ -1,0 +1,263 @@
+﻿@model ProyectoPrograAvanzada.Models.Usuario
+
+@{
+    ViewData["Title"] = "Detalle de usuario";
+}
+
+<style>
+    .details-page-header {
+        margin-bottom: 24px;
+    }
+
+        .details-page-header h2 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            color: #084c61;
+        }
+
+        .details-page-header p {
+            margin: 6px 0 0 0;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+    .details-card {
+        background-color: #f8fbfc;
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: inset 0 0 0 1px rgba(8, 76, 97, 0.06);
+        max-width: 860px;
+    }
+
+    .user-header-box {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background-color: #ffffff;
+        border: 1px solid #dbe7eb;
+        border-radius: 18px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .user-avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background-color: #d7e6eb;
+        color: #084c61;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .user-main-info h3 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .user-subtitle {
+        margin-top: 6px;
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .detail-item {
+        background-color: #ffffff;
+        border: 1px solid #dbe7eb;
+        border-radius: 16px;
+        padding: 16px;
+    }
+
+    .detail-label {
+        font-size: 13px;
+        color: #64748b;
+        margin-bottom: 6px;
+    }
+
+    .detail-value {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1e293b;
+        word-break: break-word;
+    }
+
+    .status-badge,
+    .role-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .status-active {
+        background-color: #d1f0dd;
+        color: #18794e;
+    }
+
+    .status-inactive {
+        background-color: #f8d7da;
+        color: #842029;
+    }
+
+    .role-admin {
+        background-color: #ede9fe;
+        color: #6d28d9;
+    }
+
+    .role-user {
+        background-color: #e0f2fe;
+        color: #0369a1;
+    }
+
+    .role-default {
+        background-color: #e2e8f0;
+        color: #475569;
+    }
+
+    .details-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 26px;
+    }
+
+    .btn-edit-custom {
+        background-color: #084c61;
+        color: #fff;
+        border: none;
+        border-radius: 14px;
+        padding: 11px 22px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.25s ease;
+    }
+
+        .btn-edit-custom:hover {
+            background-color: #063b4b;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+    .btn-back-custom {
+        background-color: #d7e6eb;
+        color: #084c61;
+        border: none;
+        border-radius: 14px;
+        padding: 11px 20px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.25s ease;
+    }
+
+        .btn-back-custom:hover {
+            background-color: #c4dbe2;
+            color: #063b4b;
+        }
+
+    @@media (max-width: 768px) {
+        .details-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .user-header-box {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+
+@{
+    var inicial = !string.IsNullOrWhiteSpace(Model.Nombre)
+        ? Model.Nombre.Trim().Substring(0, 1).ToUpper()
+        : "?";
+
+    var rolTexto = Model.Rol?.Trim() ?? "Sin rol";
+    var rolClase = "role-default";
+
+    if (rolTexto.Equals("Administrador", StringComparison.OrdinalIgnoreCase) ||
+        rolTexto.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+    {
+        rolClase = "role-admin";
+    }
+    else if (rolTexto.Equals("Usuario", StringComparison.OrdinalIgnoreCase) ||
+             rolTexto.Equals("Empleado", StringComparison.OrdinalIgnoreCase))
+    {
+        rolClase = "role-user";
+    }
+}
+
+<div class="details-page-header">
+    <h2>Detalle de usuario</h2>
+    <p>Consulte la información completa del usuario seleccionado.</p>
+</div>
+
+<div class="details-card">
+    <div class="user-header-box">
+        <div class="user-avatar">@inicial</div>
+
+        <div class="user-main-info">
+            <h3>@Model.Nombre</h3>
+            <div class="user-subtitle">ID del usuario: @Model.Id</div>
+        </div>
+    </div>
+
+    <div class="details-grid">
+        <div class="detail-item">
+            <div class="detail-label">Correo electrónico</div>
+            <div class="detail-value">@Model.Correo</div>
+        </div>
+
+        <div class="detail-item">
+            <div class="detail-label">Rol</div>
+            <div class="detail-value">
+                <span class="role-badge @rolClase">@rolTexto</span>
+            </div>
+        </div>
+
+        <div class="detail-item">
+            <div class="detail-label">Estado</div>
+            <div class="detail-value">
+                @if (Model.Activo)
+                {
+                    <span class="status-badge status-active">Activo</span>
+                }
+                else
+                {
+                    <span class="status-badge status-inactive">Inactivo</span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="details-actions">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn-edit-custom">
+            <i class="bi bi-pencil-square"></i>
+            Editar usuario
+        </a>
+
+        <a asp-action="Index" class="btn-back-custom">
+            <i class="bi bi-arrow-left"></i>
+            Volver al listado
+        </a>
+    </div>
+</div>

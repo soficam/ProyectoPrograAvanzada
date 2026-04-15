@@ -1,0 +1,197 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pedidos 360 - Login</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #e9e9e9;
+            min-height: 100vh;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-banner {
+            background-color: #003f52;
+            height: 320px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+            .top-banner img {
+                max-width: 500px;
+                width: 100%;
+                height: auto;
+            }
+
+        .login-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 70px;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .form-group {
+            margin-bottom: 28px;
+        }
+
+        .form-control {
+            width: 100%;
+            height: 40px;
+            border: none;
+            outline: none;
+            border-radius: 20px;
+            padding: 0 18px;
+            background-color: #7fa5b1;
+            color: white;
+            font-size: 14px;
+        }
+
+            .form-control::placeholder {
+                color: white;
+                opacity: 0.95;
+                font-style: italic;
+                font-size: 12px;
+            }
+
+        .forgot-password {
+            display: inline-block;
+            margin-top: 8px;
+            margin-left: 12px;
+            font-size: 12px;
+            color: #5a2d2d;
+            text-decoration: none;
+            font-style: italic;
+        }
+
+            .forgot-password:hover {
+                text-decoration: underline;
+            }
+
+        .btn-login-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .btn-login {
+            min-width: 230px;
+            height: 38px;
+            border-radius: 20px;
+            border: 2px solid #cfd8dc;
+            background-color: #00586f;
+            color: white;
+            font-size: 18px;
+            font-style: italic;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+            .btn-login:hover {
+                background-color: #00485b;
+            }
+
+        .validation-summary-errors,
+        .field-validation-error {
+            color: #b00020;
+            font-size: 13px;
+            margin-top: 8px;
+            display: block;
+        }
+
+        @@media (max-width: 768px) {
+            .top-banner {
+                height: 240px;
+            }
+
+                .top-banner img {
+                    max-width: 350px;
+                }
+
+            .login-container {
+                padding: 40px 20px 0 20px;
+            }
+
+            .btn-login {
+                min-width: 180px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-wrapper">
+
+        <div class="top-banner">
+            <img src="~/img/logo-pedidos360.png" alt="Pedidos 360" />
+        </div>
+
+        <div class="login-container">
+            <div class="login-box">
+
+                @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger validation-summary-errors" })
+
+                    <div class="form-group">
+                        <input type="text" name="Usuario" class="form-control" placeholder="Correo electrónico" value="@ViewBag.Usuario" />
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" name="Contrasena" class="form-control" placeholder="Contraseña" />
+                        <a asp-controller="Account" asp-action="ForgotPassword" class="forgot-password">
+                            ¿Olvidaste tu contraseña?
+                        </a>
+                    </div>
+
+                    <div class="btn-login-container">
+                        <button type="submit" class="btn-login">Ingresar</button>
+                    </div>
+                    <div class="btn-login-container" style="margin-top: 12px;">
+                        <a asp-controller="Account" asp-action="Register" class="btn-login" style="text-decoration:none; display:flex; align-items:center; justify-content:center; font-size:18px;">
+                            Registrarse
+                        </a>
+                    </div>
+                    <div class="btn-login-container" style="margin-top: 12px;">
+                        <a asp-controller="Catalogo" asp-action="Index" class="btn-login" style="text-decoration:none; display:flex; align-items:center; justify-content:center; font-size:18px; background-color:#d7e6eb; color:#084c61; border:none;">
+                            Volver al catálogo
+                        </a>
+                    </div>
+                }
+
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

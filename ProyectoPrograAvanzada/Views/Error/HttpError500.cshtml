@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Error 500";
+}
+
+<div class="error-page-container">
+    <div class="error-card">
+        <div class="error-code">500</div>
+        <h1>Error interno del servidor</h1>
+        <p>
+            El sistema encontró un problema al procesar la solicitud.
+            Nuestro manejo de errores evitó que la aplicación se cerrara de forma abrupta.
+        </p>
+
+        <div class="error-actions">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Volver al inicio</a>
+        </div>
+    </div>
+</div>

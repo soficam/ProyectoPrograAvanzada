@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Error 404";
+}
+
+<div class="error-page-container">
+    <div class="error-card">
+        <div class="error-code">404</div>
+        <h1>Página no encontrada</h1>
+        <p>
+            La página que intenta abrir no existe, fue movida o la dirección ingresada no es correcta.
+        </p>
+
+        <div class="error-actions">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Ir al inicio</a>
+            <button type="button" class="btn btn-outline-secondary" onclick="history.back()">Volver atrás</button>
+        </div>
+    </div>
+</div>

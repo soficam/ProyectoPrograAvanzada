@@ -1,0 +1,112 @@
+﻿@model ProyectoPrograAvanzada.Models.Pedido
+
+@{
+    ViewData["Title"] = "Editar pedido";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/style-pedido-edit.css" asp-append-version="true" />
+}
+
+<div class="form-page-header">
+    <h2>Editar pedido</h2>
+    <p>Actualice la información general del pedido seleccionado.</p>
+</div>
+
+<div class="pedido-card">
+    <form asp-action="Edit" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Fecha" />
+        <input type="hidden" asp-for="Subtotal" />
+        <input type="hidden" asp-for="Impuestos" />
+        <input type="hidden" asp-for="Total" />
+
+        <div class="section-title">Información general</div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <label asp-for="ClienteId" class="form-label custom-label">Cliente</label>
+                <select asp-for="ClienteId" asp-items="ViewBag.ClienteId" class="form-select custom-select">
+                    <option value="">Seleccione un cliente</option>
+                </select>
+                <span asp-validation-for="ClienteId" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="UsuarioId" class="form-label custom-label">Usuario</label>
+                <select asp-for="UsuarioId" asp-items="ViewBag.UsuarioId" class="form-select custom-select">
+                    <option value="">Seleccione un usuario</option>
+                </select>
+                <span asp-validation-for="UsuarioId" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="Estado" class="form-label custom-label">Estado</label>
+                <select asp-for="Estado" class="form-select custom-select">
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="En proceso">En proceso</option>
+                    <option value="Entregado">Entregado</option>
+                    <option value="Cancelado">Cancelado</option>
+                </select>
+                <span asp-validation-for="Estado" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label custom-label">Fecha</label>
+                <input type="text"
+                       class="form-control custom-input readonly-box"
+                       value="@Model.Fecha.ToString("dd/MM/yyyy hh:mm tt")"
+                       readonly />
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label custom-label">Activo</label>
+                <div class="status-box compact-status-box">
+                    <div class="form-check form-switch m-0">
+                        <input class="form-check-input" asp-for="Activo" />
+                        <label class="form-check-label" asp-for="Activo">
+                            Pedido activo
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">Resumen del pedido</div>
+
+        <div class="summary-card mb-4">
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span>₡ @Model.Subtotal.ToString("N2")</span>
+            </div>
+            <div class="summary-row">
+                <span>Impuestos</span>
+                <span>₡ @Model.Impuestos.ToString("N2")</span>
+            </div>
+            <div class="summary-row">
+                <span>Total</span>
+                <span>₡ @Model.Total.ToString("N2")</span>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-save-custom">
+                <i class="bi bi-check-circle"></i>
+                Guardar cambios
+            </button>
+
+            <a asp-action="Index" class="btn-back-custom">
+                <i class="bi bi-arrow-left"></i>
+                Volver al listado
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
