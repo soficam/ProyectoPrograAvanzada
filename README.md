@@ -1,15 +1,18 @@
 # ProyectoPrograAvanzada v5
 Tras ejecutar el SSMS script "ProyectoCompletoSQL v4", se encontrarán disponibles los siguientes usuarios de prueba:
 
-1. Administrador
+**1. Administrador**
+   
    Correo: admin@pedidos360.com
    Contraseña: 123
    
-3. Empleado
+**3. Empleado**
+   
    Correo: empleado@pedidos360.com
    Contraseña: 123
    
-5. Cliente
+**5. Cliente**
+   
    Correo: cliente@pedidos360.com
    Contraseña: 123
 
